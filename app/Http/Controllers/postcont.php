@@ -1,31 +1,45 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\post;
+use Illuminate\Support\Facades\Validator;
 class postcont extends Controller
 {
     public function create(){
+        
         return view('cpost');
     }
 public function store(Request $request)
 {
-    $user = $request->user;
+    $validator = Validator::make($request->all(), [
+        'image' => 'required|image|mimes:jpeg,jpg,png|', 
+        'title' => 'required|string',
+        'caption' => 'required|string',
+    ]);
+    if ($validator->fails()) {
+        return redirect()->route('cpost')->withErrors([Auth::user()->id => 'Invalid Data']);
+    }
+
     $title = $request->title;
     $image = $request->file('image') -> getClientOriginalName();
     $caption = $request->caption;
     $request->file('image')->storeAs('public/postimage/', $image);
     $data = new post();
-    $data -> user = $user;
+    $data -> user_id = Auth::user()->id;
     $data -> title = $title;
     $data -> image = $image;
     $data -> caption = $caption;
     $data ->save();
-    return redirect('/cpost');
+    return redirect('/cpost')->with(['success' => 'Post Berhasil Disimpan!']);
 }
-    public function show(){
-        $data=post::all();
+public function show(){
+        $data=post::all()->where('user_id', '=', Auth::user()->id);
         return view('postshow', compact('data'));
-    }
+}
+public function index(){
+    $data=post::all();
+    return view('dashboard', compact('data'));
+}
 }
