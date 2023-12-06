@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12 flex justify-center">
+    <div class="py-12 ">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
         
@@ -24,8 +24,10 @@
                     </div>
                     <div class="mb-4">
                         <label for="image" class="text-gray-700">Image:</label>
-                        <input type="file" name="image" class="form-input" accept=".png, .jpg, .jpeg" required><br>
+                        <input type="file" name="image" class="form-input" accept=".png, .jpg, .jpeg" required onchange="displayimage(this)"><br>
+                        <img src="{{ asset('storage/download.png') }}" id="display" onclick="triggerClick()";">
                     </div>
+                    
                     <div class="mb-4">
                         <label for="caption" class="text-gray-700">Caption:</label>
                         <textarea name="caption" rows="4" class="form-input"></textarea><br>
@@ -41,4 +43,19 @@
         {{ session('success') }}
     </div>
     @endif
+    <script>function triggerClick(){
+    document.querySelector('#image').click();
+}
+
+function displayimage(e) {
+    if (e.files[0]){
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.querySelector('#display').setAttribute('src', e.target.result);
+        }
+        reader.readAsDataURL(e.files[0])
+    }
+}
+
+</script>
 </x-app-layout>

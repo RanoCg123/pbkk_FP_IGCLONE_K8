@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\post;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
 class postcont extends Controller
 {
     public function create(){
@@ -39,7 +40,14 @@ public function show(){
         return view('postshow', compact('data'));
 }
 public function index(){
-    $data=post::all();
+    $data = Cache::get('random_posts', function () {
+        // If cache is not available, provide a default value (empty array)
+        return [];
+    });
+
     return view('dashboard', compact('data'));
+}
+public function editor(){
+    return view('editor');
 }
 }

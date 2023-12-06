@@ -29,6 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/cpost', [postcont::class, 'create'])->name('cpost');
     Route::post('/cpost', [postcont::class, 'store'] );
     Route::get('/postshow', [postcont::class, 'show']) -> name('postshow');
+    Route::get('/editor', [postcont::class, 'editor'])->name('editor');
 });
 
 require __DIR__.'/auth.php';
